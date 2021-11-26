@@ -1,5 +1,6 @@
 export default class NotificationMessage {
   element;
+  static activeNotification;
 
   constructor(
     message = '',
@@ -14,21 +15,18 @@ export default class NotificationMessage {
   }
 
   initElement() {
-    if (document.getElementById('notification')) {
-      document.getElementById('notification').remove();
+    if (NotificationMessage.activeNotification) {
+      NotificationMessage.activeNotification.remove();
     }
     const element = document.createElement('div');
     element.innerHTML = this.template;
     this.element = element.firstElementChild;
+    NotificationMessage.activeNotification = this.element;
   }
 
-  show(cover) {
-    if (cover) {
-      cover.innerHTML = this.element.outerHTML;
-      document.body.append(cover);
-    } else {
-      document.body.append(this.element);
-    }
+  show(cover = document.createElement('div')) {
+    cover.innerHTML = NotificationMessage.activeNotification.outerHTML;
+    document.body.append(NotificationMessage.activeNotification);
     setTimeout(() => {
       this.remove();
     }, this.duration);
